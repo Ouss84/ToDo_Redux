@@ -1,5 +1,5 @@
 import * as actionTypes from "./actions";
-
+import { composeWithDevTools } from "@redux-devtools/extension";
 const initialState = {
   notes: [
     {
