@@ -17,6 +17,24 @@
       "title": "Create store / context",
       "task": "Create new file and use React.createContext()",
       "done": false
+    },
+    {
+      "id": 4,
+      "title": "Create store",
+      "task": "Create new file",
+      "done": false
+    },
+    {
+      "title": "wqeqe",
+      "task": "qewe",
+      "done": false,
+      "id": 5
+    },
+    {
+      "title": "wqeqeqeweqwe",
+      "task": "qeweqeqewe",
+      "done": false,
+      "id": 6
     }
   ]
 }
