@@ -3,7 +3,7 @@ export const notes = [
     id: 1,
     title: "Create clean app",
     task: "npx create-react-app",
-    done: true,
+    done: false,
   },
   {
     id: 2,

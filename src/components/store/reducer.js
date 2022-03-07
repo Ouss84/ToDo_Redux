@@ -1,27 +1,28 @@
 import * as actionTypes from "./actions";
-import { composeWithDevTools } from "@redux-devtools/extension";
+
 const initialState = {
   notes: [
     {
       id: 1,
       title: "Create clean app",
       task: "npx create-react-app",
-      done: true,
+      done: false,
     },
     {
       id: 2,
-      title: "Install Redux",
-      task: "npm install redux",
+      title: "Clean app",
+      task: "Delete and clean unnecessary stuff",
       done: false,
     },
     {
       id: 3,
-      title: "Install Complementary Packages​",
-      task: "npm install react-redux and npm install --save-dev redux-devtools",
+      title: "Create store / context",
+      task: "Create new file and use React.createContext()",
       done: false,
     },
   ],
 };
+
 const reducer = (state = initialState, action) => {
   switch (action.type) {
     case actionTypes.ADD_TODO:
@@ -36,21 +37,26 @@ const reducer = (state = initialState, action) => {
         ],
       };
     case actionTypes.REMOVE_TODO:
-      const shortnedList = state.notes.filter(
+      const updateArray = state.notes.filter(
         (item) => item.id !== action.payload
       );
-
-      return { ...state, notes: shortnedList };
-    case actionTypes.TODO_DONE:
-      const taskDone = state.notes.map((item) => {
+      return {
+        ...state,
+        notes: updateArray,
+      };
+    case actionTypes.DONE_NOTE:
+      const doneToggle = state.notes.map((item) => {
         return item.id === action.payload
           ? { ...item, done: !item.done }
           : { ...item };
       });
-      return { ...state, notes: taskDone };
-
+      return {
+        ...state,
+        notes: doneToggle,
+      };
     default:
       return state;
   }
 };
+
 export default reducer;

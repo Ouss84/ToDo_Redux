@@ -1,62 +1,67 @@
-import React from "react";
-import { useState, useEffect } from "react";
-import * as actionTypes from "../store/actions";
+import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import classes from "./TodoList.module.css";
+import * as actionTypes from "../store/actions";
 
 const TodoList = () => {
   const notes = useSelector((state) => state.notes);
-  const dispatch = useDispatch();
   const [filteredValue, setFilteredValue] = useState();
-  const [filteredNotes, setFilteredNotes] = useState(notes);
-  const [searchInput, setSearchInput] = useState("");
+  const [searchValue, setSearchValue] = useState("");
+  const [filterList, setFilteredList] = useState(notes);
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (filteredValue === "true") {
+      setFilteredList(notes.filter((item) => item.done === !!filteredValue));
+    } else if (filteredValue === "false") {
+      setFilteredList(notes.filter((item) => item.done !== !!filteredValue));
+    } else {
+      setFilteredList(filterList);
+    }
+  }, [filteredValue, notes]);
+
+  useEffect(() => {
+    if (searchValue === "") {
+      setFilteredList(notes);
+    } else {
+      setFilteredList(notes.filter((note) => note.title.includes(searchValue)));
+    }
+  }, [searchValue, notes]);
+
   const removeHandler = (id) => {
-    // console.log(id, "was clicked");
     dispatch({
       type: actionTypes.REMOVE_TODO,
       payload: id,
     });
   };
+
   const doneHandler = (id) => {
-    console.log(id, "was clicked");
     dispatch({
-      type: actionTypes.TODO_DONE,
+      type: actionTypes.DONE_NOTE,
       payload: id,
     });
   };
-  const tasksFiltered = notes.filter((item) => {
-    return item.title.toLowerCase().includes(searchInput.toLowerCase());
-  });
-  const filterHandler = (event) => {
-    setFilteredValue(event.target.value);
-    // console.log(searchInput);
+
+  const searchHandler = (e) => {
+    setSearchValue(e.target.value);
   };
-  const searchInputHandler = (event) => {
-    setSearchInput(event.target.value);
+
+  const filterHandler = (e) => {
+    setFilteredValue(e.target.value);
   };
-  useEffect(() => {
-    if (filteredValue === "done") {
-      setFilteredNotes(notes.filter((item) => item.done === !!filteredValue));
-    } else if (filteredValue === "not-done") {
-      setFilteredNotes(notes.filter((item) => item.done !== !!filteredValue));
-    } else {
-      setFilteredNotes(notes);
-    }
-  }, [filteredValue, notes]);
 
   return (
     <div className={classes.todos}>
-      <label> Search task:</label>
-      <input type="text" onChange={searchInputHandler} />
-      <label>choose:</label>
-      <select name="done" onChange={filterHandler}>
-        <option value="all">All</option>
-        <option value="done">Done</option>
-        <option value="not-done">Not done</option>
-      </select>
-
+      <label htmlFor="search">Search from todos: </label>
+      <input type="search" id="search" onChange={searchHandler} />
       <h1>Notes:</h1>
-      {filteredNotes.map((note) => {
+      <select name="done" defaultValue="all" onChange={filterHandler}>
+        <option value="true">Done</option>
+        <option value="false">Not done</option>
+        <option value="all">All</option>
+      </select>
+      {filterList.map((note) => {
         return (
           <div
             onClick={() => doneHandler(note.id)}
@@ -65,9 +70,7 @@ const TodoList = () => {
             }`}
             key={note.id}
           >
-            <h2>
-              {note.id}. {note.title}
-            </h2>
+            <h2> {note.title}</h2>
             <p>{note.task}</p>
             <span
               onClick={() => removeHandler(note.id)}
